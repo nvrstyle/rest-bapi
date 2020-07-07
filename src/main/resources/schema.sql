@@ -60,13 +60,13 @@ CREATE INDEX IX_Office_Organization_Id ON Office(org_id);
 ALTER TABLE Office ADD FOREIGN KEY (org_id) REFERENCES Organization(id);
 
 CREATE INDEX IX_User_Office_Id ON User(office_id);
-ALTER table User ADD FOREIGN KEY (office_id) REFERENCES Office(id);
+ALTER TABLE User ADD FOREIGN KEY (office_id) REFERENCES Office(id);
 
 CREATE INDEX IX_User_Doc_Id ON User(doc_id);
-ALTER table User ADD FOREIGN KEY (doc_id) REFERENCES Doc(id);
+ALTER TABLE User ADD FOREIGN KEY (doc_id) REFERENCES Doc(id);
 
 CREATE INDEX IX_User_Country_Id ON User(country_id);
-ALTER table User ADD FOREIGN KEY (country_id) REFERENCES Country(id);
+ALTER TABLE User ADD FOREIGN KEY (country_id) REFERENCES Country(id);
 
 CREATE INDEX IX_Doc_Doc_Type_Id ON Doc(type_id);
-ALTER table Doc ADD FOREIGN KEY (type_id) REFERENCES Doc_Type(id);
+ALTER TABLE Doc ADD FOREIGN KEY (type_id) REFERENCES Doc_Type(id);
