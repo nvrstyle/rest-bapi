@@ -1,27 +1,27 @@
-insert into Doc_Type (id, name, code) values
+INSERT INTO Doc_Type (id, name, code) VALUES
 (1, 'Паспорт гражданина РФ', '21'),
 (2, 'Свидетельство о рождении', '23'),
 (3, 'Вид на жительство в РФ', '12'),
 (4, 'Паспорт иностранного гражданина', '10');
 
-insert into Country (id, name, code) values
+INSERT INTO Country (id, name, code) VALUES
 (1, 'Российская Федерация', '643'),
 (2, 'США', '578'),
 (3, 'Польша', '399');
 
-insert into Organization (id, name, full_name, inn, kpp, address, phone, is_active) values
+INSERT INTO Organization (id, name, full_name, inn, kpp, address, phone, is_active) VALUES
 (1, 'OOO ФАВОРИТ', 'Общество с ограниченной ответственностью "ФАВОРИТ"', '1174574545', '775782780', 'Россия, г.Москва, ул. Красная, д.1', '+7 964 228 69 90', 'true'),
 (2, 'ИП Хачатурян И.В.', 'Индивидуальный предприниматель Хачатурян И.В', '5027560578', '145102789', 'Россия, г.Москва, ул. Ленина, 99', '+7 989 46 46 66', 'true'),
 (3, 'ООО МТС', 'Общество с ограниченной ответственностью "МТС"', '640789451', '789741753', 'Россия, г.Москва, ул. Кирова, д.1', '+7 945 86 86 88', 'true');
 
-insert into Office (id, org_id, name, address, phone, is_active) values
+INSERT INTO Office (id, org_id, name, address, phone, is_active) VALUES
 (1, 3, 'Головной офис', 'Россия, г.Москва, ул. Айская, д.59', '+7 347 224 56 62', true),
 (2, 2, 'Производственная база', 'Россия, г.Москва, Соединительное шоссе, д.1', '+7 347 218 77 77', true),
 (3, 2, 'Розничный магазин "Молот"', 'Россия, г.Москва, проспект Октября, д.70', '+7 347 234 51 10', true),
 (4, 1, 'Дополнительный офис "Небеса"', 'Россия, г.Санкт-Петербург, ул.Площадь Восстания, д.12', '+7 812 322 19 10', true),
 (5, 1, 'Оптовый центр продаж', 'Россия, г.Москва, ул. Рижская, д.5', '+7 347 218 34 32', false);
 
-insert into Doc (id, type_id, number, date) VALUES
+INSERT INTO Doc (id, type_id, number, date) VALUES
 (1, 1, '8010 990807', '2013-10-01'),
 (2, 1, '8009 991817', '2005-11-15'),
 (3, 2, '8007 545796', '2001-09-01'),
@@ -35,7 +35,7 @@ insert into Doc (id, type_id, number, date) VALUES
 (11, 1, '8011 110077', '2013-04-30'),
 (12, 1, '8000 119997', '2009-04-22');
 
-insert into User (id, office_id, doc_id, country_id, first_name, second_name, middle_name, position, phone, is_identified) VALUES
+INSERT INTO User (id, office_id, doc_id, country_id, first_name, second_name, middle_name, position, phone, is_identified) VALUES
 (1, 1, 12, 1, 'Артем', 'Андреев', 'Петрович', 'Генеральный директор', '+7 917 345 12 11', true),
 (2, 1, 11, 1, 'Снежана', 'Семенова', 'Денисовна', 'Заведующая хозяйством', '+7 987 100 01 11', true),
 (3, 2, 10, 1, 'Владислав', 'Архипов', 'Владимирович', 'Водитель-экспедитор', '+7 909 350 88 78', true),
