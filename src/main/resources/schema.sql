@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Doc (
 COMMENT ON TABLE Doc IS 'Документ';
 
 CREATE TABLE IF NOT EXISTS Doc_Type(
-    id      INTEGER                     COMMENT 'Уникальный идентификатор - код документа' PRIMARY KEY AUTO_INCREMENT,
+    id      INTEGER                     COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
     name    VARCHAR(50) NOT NULL        COMMENT 'Название типа документа',
     code    VARCHAR(20) NOT NULL        COMMENT 'Код документа'
 );
