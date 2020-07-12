@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS Organization (
     kpp         VARCHAR(9) NOT NULL           COMMENT 'КПП',
     address     VARCHAR(200)NOT NULL          COMMENT 'Адрес',
     phone       VARCHAR(20)                   COMMENT 'Телефон',
-    is_active   BOOLEAN NOT NULL              COMMENT 'Активность в настоящий момент',
+    is_active   BOOLEAN DEFAULT FALSE         COMMENT 'Активность в настоящий момент',
     version     INTEGER NOT NULL DEFAULT 0    COMMENT 'Служебное поле hibernate'
 );
 COMMENT ON TABLE Organization IS 'Организация';
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS Office (
     name        VARCHAR(50) NOT NULL          COMMENT 'Название',
     address     VARCHAR(200) NOT NULL         COMMENT 'Адрес',
     phone       VARCHAR(20)                   COMMENT 'Телефон',
-    is_active   BOOLEAN NOT NULL              COMMENT 'Активность',
+    is_active   BOOLEAN DEFAULT FALSE         COMMENT 'Активность',
     version     INTEGER NOT NULL DEFAULT 0    COMMENT 'Служебное поле hibernate'
 );
 COMMENT ON TABLE Office IS 'Офис';
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS User (
     middle_name         VARCHAR(50)                   COMMENT 'Отчество',
     position            VARCHAR(50) NOT NULL          COMMENT 'Занимаемая должность',
     phone               VARCHAR(20)                   COMMENT 'Идентификатор документа, удостоверяющего личность',
-    is_identified       BOOLEAN NOT NULL              COMMENT 'Является ли сотрудник идентифицированным',
+    is_identified       BOOLEAN DEFAULT FALSE         COMMENT 'Является ли сотрудник идентифицированным',
     version             INTEGER NOT NULL DEFAULT 0    COMMENT 'Служебное поле hibernate'
 );
 COMMENT ON TABLE User IS 'Сотрудник';
