@@ -25,7 +25,6 @@ COMMENT ON TABLE Office IS 'Офис';
 CREATE TABLE IF NOT EXISTS User (
     id                  INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
     office_id           INTEGER NOT NULL              COMMENT 'Идентификатор офиса, в котором работает сотрудник',
-    doc_id              INTEGER NOT NULL              COMMENT 'Идентификатор документа, удостоверяющего личность',
     country_id          INTEGER NOT NULL              COMMENT 'Код страны',
     first_name          VARCHAR(50) NOT NULL          COMMENT 'Имя',
     second_name         VARCHAR(50)                   COMMENT 'Фамилия',
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS User (
 COMMENT ON TABLE User IS 'Сотрудник';
 
 CREATE TABLE IF NOT EXISTS Doc (
-    id              INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
+    user_id         INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY,
     type_id         INTEGER NOT NULL              COMMENT 'Код типа документа',
     number          VARCHAR(50) NOT NULL          COMMENT 'Номер',
     date            DATE NOT NULL                 COMMENT 'Дата выдачи',
@@ -68,8 +67,8 @@ ALTER TABLE Office ADD FOREIGN KEY (org_id) REFERENCES Organization(id);
 CREATE INDEX IX_User_Office_Id ON User(office_id);
 ALTER TABLE User ADD FOREIGN KEY (office_id) REFERENCES Office(id);
 
-CREATE INDEX IX_User_Doc_Id ON User(doc_id);
-ALTER TABLE User ADD FOREIGN KEY (doc_id) REFERENCES Doc(id);
+CREATE INDEX IX_Doc_User_Id ON Doc(user_id);
+ALTER TABLE Doc ADD FOREIGN KEY (user_id) REFERENCES User(id);
 
 CREATE INDEX IX_User_Country_Id ON User(country_id);
 ALTER TABLE User ADD FOREIGN KEY (country_id) REFERENCES Country(id);
