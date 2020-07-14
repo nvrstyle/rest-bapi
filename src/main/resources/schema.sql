@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS Organization (
     id          INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(50) NOT NULL          COMMENT 'Название',
-    full_name   VARCHAR(100)NOT NULL          COMMENT 'Полное название',
+    full_name   VARCHAR(100) NOT NULL         COMMENT 'Полное название',
     inn         VARCHAR(10) NOT NULL          COMMENT 'ИНН',
     kpp         VARCHAR(9) NOT NULL           COMMENT 'КПП',
-    address     VARCHAR(200)NOT NULL          COMMENT 'Адрес',
+    address     VARCHAR(200) NOT NULL         COMMENT 'Адрес',
     phone       VARCHAR(20)                   COMMENT 'Телефон',
     is_active   BOOLEAN DEFAULT FALSE         COMMENT 'Активность в настоящий момент',
     version     INTEGER NOT NULL DEFAULT 0    COMMENT 'Служебное поле hibernate'
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS Doc_Type(
 );
 COMMENT ON TABLE Doc_Type IS 'Тип документа';
 
-CREATE TABLE IF NOT EXISTS Country (
-    id          INTEGER PRIMARY KEY           COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS Country(
+    id          INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(50) NOT NULL          COMMENT 'Название страны',
     code        VARCHAR(20) NOT NULL          COMMENT 'Код страны',
     version     INTEGER NOT NULL DEFAULT 0    COMMENT 'Служебное поле hibernate'
