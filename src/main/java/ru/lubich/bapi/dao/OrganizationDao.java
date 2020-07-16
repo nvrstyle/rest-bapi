@@ -1,37 +1,41 @@
 package ru.lubich.bapi.dao;
 
 import ru.lubich.bapi.model.Organization;
+
 import java.util.List;
 
 /**
- * DAO для работы с Organization
+ * DAO-слой для работы с организациями
  */
 public interface OrganizationDao {
 
     /**
-     * Получить отфильтрованныйсписок организаций
+     * Возвращает отфильтрованный список организаций
      *
-     * @param name
-     * @param inn
-     * @param active
-     * @return List<Organization>
+     * @param filter объект с данными фильтрации
+     * @return отфильтрованный список организаций
      */
-    List<Organization> filterOrganizationList(String name, String inn, Boolean active);
+    List<Organization> list(Organization filter);
 
     /**
-     * Получить организацию по идентификатору
+     * Возвращает организацию с указанным идентификатором
      *
-     * @param id
-     * @return Organization
+     * @param id идентификатор организации
+     * @return организация с указанным идентификатором
      */
-    Organization loadOrganizationById(Integer id);
+    Organization getById(Long id);
 
     /**
-     * Сохранить организацию
+     * Обновляет информацию об организации
      *
-     * @param organization
+     * @param organization объект с новыми данными об организации
+     */
+    void update(Long id, Organization organization);
+
+    /**
+     * Сохраняет информацию о новой организации
+     *
+     * @param organization объект с данными о новой организации
      */
     void save(Organization organization);
-
-
 }
