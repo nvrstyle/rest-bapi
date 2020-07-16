@@ -1,12 +1,14 @@
 package ru.lubich.bapi.dao.impl;
 
-import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.lubich.bapi.dao.OfficeDao;
 import ru.lubich.bapi.model.Office;
 import ru.lubich.bapi.model.Organization;
+
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -21,77 +23,84 @@ public class OfficeDaoImpl implements OfficeDao {
 
     private final EntityManager em;
 
+    /**
+     * Конструктор
+     *
+     * @param em контекст
+     */
     @Autowired
     public OfficeDaoImpl(EntityManager em) {
         this.em = em;
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<Office> filterOfficeList(String orgId, String name, String phone, Boolean active) {
-        return getListOfficesByCriteria(orgId, name, phone, active);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Office loadOfficeById(Long id) {
-        return em.find(Office.class, id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void save(Office Office) {
-        em.persist(Office);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Organization loadOrgById(Long orgId) {
-        return em.find(Organization.class, orgId);
-    }
-
-    /**
-     * Найти сотрудников по заданным параметрам
-     * и вернуть их список
-     *
-     * @param organization
-     * @param name
-     * @param phone
-     * @param active
-     * @return List<Office>
-     */
-    private List<Office> getListOfficesByCriteria(String organization, String name, String phone, Boolean active) {
+    public List<Office> list(Long orgId, Office filter) {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Office> criteriaQuery = criteriaBuilder.createQuery(Office.class);
-        Root<Office> itemRoot = criteriaQuery.from(Office.class);
-        Predicate criteria = criteriaBuilder.conjunction();
-        Predicate predicateForOrgId = criteriaBuilder.equal(itemRoot.get("organization"), Long.valueOf(organization));
-        criteria = criteriaBuilder.and(criteria, predicateForOrgId);
-        if (!(Strings.isNullOrEmpty(name))) {
-            Predicate predicateForName = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("name")), "%" + name.toLowerCase() + "%");
-            criteria = criteriaBuilder.and(criteria, predicateForName);
+        Root<Office> officeRoot = criteriaQuery.from(Office.class);
+        Predicate predicate = criteriaBuilder.equal(officeRoot.get("organization").get("id"), orgId);
+        if (filter.getName() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("name"), "%" + filter.getName() + "%"));
         }
-        if (!(Strings.isNullOrEmpty(phone))) {
-            Predicate predicateForPhone = criteriaBuilder.like(itemRoot.get("phone"), "%" + phone + "%");
-            criteria = criteriaBuilder.and(criteria, predicateForPhone);
+        if (filter.getPhone() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("phone"), "%" + filter.getPhone() + "%"));
         }
-        if (active != null) {
-            Predicate predicateForActive = criteriaBuilder.equal(itemRoot.get("isActive"), active);
-            criteria = criteriaBuilder.and(criteria, predicateForActive);
+        if (filter.getActive() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(officeRoot.get("isActive"), filter.getActive()));
         }
-        criteriaQuery.where(criteria);
-        return em.createQuery(criteriaQuery).getResultList();
+        criteriaQuery.select(officeRoot).where(predicate);
+        TypedQuery<Office> query = em.createQuery(criteriaQuery);
+        return query.getResultList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Office getById(Long id) {
+        TypedQuery<Office> query = em.createQuery("SELECT o FROM Office o WHERE o.id=:id", Office.class);
+        query.setParameter("id", id);
+        Office office;
+        try {
+            office = query.getSingleResult();
+        }catch (NoResultException e){
+            return null;
+        }
+        return office;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(Long id, Office updateOffice) {
+        if(updateOffice != null) {
+            Office office = getById(id);
+            office.setName(updateOffice.getName());
+            office.setAddress(updateOffice.getName());
+            office.setPhone(updateOffice.getPhone());
+            office.setActive(updateOffice.getActive());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void save(Office office) {
+        Organization organization;
+        TypedQuery<Organization> query = em.createQuery(
+                "SELECT o FROM Organization o WHERE o.id=:id", Organization.class);
+        query.setParameter("id", office.getOrganization().getId());
+        try {
+            organization = query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new NoResultException();
+        }
+        office.setOrganization(organization);
+        em.persist(office);
+    }
 }

@@ -1,47 +1,41 @@
 package ru.lubich.bapi.dao;
 
 import ru.lubich.bapi.model.Office;
-import ru.lubich.bapi.model.Organization;
+
 import java.util.List;
 
 /**
- * DAO для работы с Office
+ * DAO-слой для работы с офисами
  */
 public interface OfficeDao {
 
     /**
-     * Получить отфильтрованный список офисов
+     * Возвращает отфильтрованный список офисов
      *
-     * @param orgId
-     * @param name
-     * @param phone
-     * @param active
-     * @return List<Office>
+     * @param filter объект с данными фильтрации
+     * @return отфильтрованный список офисов
      */
-    List<Office> filterOfficeList(String orgId, String name, String phone, Boolean active);
+    List<Office> list(Long orgId, Office filter);
 
     /**
-     * Получить офис по идентификатору
+     * Возвращает офис с указанным идентификатором
      *
-     * @param id
-     * @return Office
+     * @param id идентификатор офиса
+     * @return офис с указанным идентификатором
      */
-    Office loadOfficeById(Long id);
+    Office getById(Long id);
 
     /**
-     * Сохранить офис
+     * Обновляет информацию об офисе
      *
-     * @param office
+     * @param office объект с новыми данными об офисе
+     */
+    void update(Long id, Office office);
+
+    /**
+     * Сохраняет новый офис
+     *
+     * @param office объект с данными о новом офисе
      */
     void save(Office office);
-
-    /**
-     * Получить организацию по идентификатору
-     *
-     * @param orgId
-     * @return Organization
-     */
-    Organization loadOrgById(Long orgId);
-
-
 }
