@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class CountryServiceImpl implements CountryService {
 
-    private final CountryDao countriesDao;
+    private final CountryDao countryDao;
 
     /**
      * Конструктор
@@ -26,7 +26,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Autowired
     public CountryServiceImpl(CountryDao countryDao) {
-        this.countriesDao = countryDao;
+        this.countryDao = countryDao;
     }
 
     /**
@@ -35,7 +35,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional(readOnly = true)
     public List<CountryView> list() {
-        List<Country> list = countriesDao.list();
+        List<Country> list = countryDao.list();
         return list.stream().map(mapCountry()).collect(Collectors.toList());
     }
 
