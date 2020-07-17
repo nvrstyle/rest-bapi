@@ -72,7 +72,7 @@ public class Organization {
      * Служебное поле Hibernate
      */
     @Version
-    private Integer version = 0 ;
+    private Integer version;
 
     /**
      * Список офисов организации

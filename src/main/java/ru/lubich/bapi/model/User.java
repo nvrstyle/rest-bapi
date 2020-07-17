@@ -57,7 +57,7 @@ public class User {
      * Служебное поле Hibernate
      */
     @Version
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Офис, в котором работает сотрудник

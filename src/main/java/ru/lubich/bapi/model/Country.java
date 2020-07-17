@@ -32,7 +32,7 @@ public class Country {
      * Служебное поле hibernate
      */
     @Version
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Конструктор для Hibernate

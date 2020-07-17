@@ -31,7 +31,7 @@ public class Doc {
     private Date date;
 
     @Version
-    private Integer version = 0;
+    private Integer version;
 
     /**
      * Вид документа
