@@ -1,6 +1,10 @@
 package ru.lubich.bapi.model;
 
-import javax.persistence.*;
+import javax.persistence.Version;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Справочник видов документов
