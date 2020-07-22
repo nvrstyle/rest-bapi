@@ -72,8 +72,7 @@ public class User {
     @OneToOne(
             mappedBy = "user",
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            optional = false
+            cascade = CascadeType.ALL
     )
     private Doc doc;
 
