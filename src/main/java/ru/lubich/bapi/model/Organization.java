@@ -71,7 +71,7 @@ public class Organization {
      * Действующая ли организация
      */
     @Column(name = "is_active")
-    private Boolean isActive = false;
+    private Boolean isActive;
 
     /**
      * Служебное поле Hibernate

@@ -59,7 +59,7 @@ public class Office {
      * Действующий ли офис
      */
     @Column(name = "is_active")
-    private Boolean isActive = false;
+    private Boolean isActive;
 
     /**
      * Организация. к которой относится офис

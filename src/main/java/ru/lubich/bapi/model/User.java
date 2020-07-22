@@ -62,7 +62,7 @@ public class User {
      * Авторизован ли работник
      */
     @Column(name = "is_identified")
-    private Boolean isIdentified = false;
+    private Boolean isIdentified;
 
     /**
      * Служебное поле Hibernate
