@@ -3,10 +3,14 @@ package ru.lubich.bapi.dao.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.lubich.bapi.dao.DocTypeDao;
+import ru.lubich.bapi.exception.InnerException;
 import ru.lubich.bapi.model.DocType;
+import ru.lubich.bapi.model.Office;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,7 +38,13 @@ public class DocTypeDaoImpl implements DocTypeDao {
     @Override
     public List<DocType> list() {
         TypedQuery<DocType> query = em.createQuery("SELECT d FROM DocType d", DocType.class);
-        return query.getResultList();
+        List<DocType> docTypeList;
+        try {
+            docTypeList = new ArrayList<>(query.getResultList());
+        } catch (NoResultException e){
+            throw new InnerException("Типы документов не найдены в базе данных", e);
+        }
+        return docTypeList;
     }
 
     /**
@@ -48,7 +58,7 @@ public class DocTypeDaoImpl implements DocTypeDao {
         try {
             docType = query.getSingleResult();
         } catch (NoResultException e) {
-            return null;
+            throw new InnerException(String.format("Тип документа с кодом %s", code, " не найден в базе данных"), e);
         }
         return docType;
     }
