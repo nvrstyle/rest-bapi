@@ -38,12 +38,6 @@ public class Country {
     @Version
     private Integer version;
 
-    /**
-     * Конструктор для Hibernate
-     */
-    public Country() {
-    }
-
     public Long getId() {
         return id;
     }

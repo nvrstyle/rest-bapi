@@ -58,12 +58,6 @@ public class Doc {
     @MapsId
     private User user;
 
-    /**
-     * Конструктор для Hibernate
-     */
-    public Doc() {
-    }
-
     public Long getId() {
         return id;
     }

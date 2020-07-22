@@ -38,12 +38,6 @@ public class DocType {
     @Version
     private Integer version;
 
-    /**
-     * Конструктор для Hibernate
-     */
-    public DocType() {
-    }
-
     public int getId() {
         return id;
     }
