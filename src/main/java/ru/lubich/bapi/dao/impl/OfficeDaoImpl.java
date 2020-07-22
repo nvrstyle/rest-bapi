@@ -40,7 +40,7 @@ public class OfficeDaoImpl implements OfficeDao {
      * {@inheritDoc}
      */
     @Override
-    public Office loadOfficeById(Integer id) {
+    public Office loadOfficeById(Long id) {
         return em.find(Office.class, id);
     }
 
@@ -56,7 +56,7 @@ public class OfficeDaoImpl implements OfficeDao {
      * {@inheritDoc}
      */
     @Override
-    public Organization loadOrgById(Integer orgId) {
+    public Organization loadOrgById(Long orgId) {
         return em.find(Organization.class, orgId);
     }
 
@@ -75,7 +75,7 @@ public class OfficeDaoImpl implements OfficeDao {
         CriteriaQuery<Office> criteriaQuery = criteriaBuilder.createQuery(Office.class);
         Root<Office> itemRoot = criteriaQuery.from(Office.class);
         Predicate criteria = criteriaBuilder.conjunction();
-        Predicate predicateForOrgId = criteriaBuilder.equal(itemRoot.get("organization"), Integer.valueOf(organization));
+        Predicate predicateForOrgId = criteriaBuilder.equal(itemRoot.get("organization"), Long.valueOf(organization));
         criteria = criteriaBuilder.and(criteria, predicateForOrgId);
         if (!(Strings.isNullOrEmpty(name))) {
             Predicate predicateForName = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("name")), "%" + name.toLowerCase() + "%");

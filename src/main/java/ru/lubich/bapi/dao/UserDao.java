@@ -31,7 +31,7 @@ public interface UserDao {
      * @param id
      * @return User
      */
-    User loadUserById(Integer id);
+    User loadUserById(Long id);
 
     /**
      * Сохранить сотрудника

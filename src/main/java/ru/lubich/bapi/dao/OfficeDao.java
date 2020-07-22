@@ -26,7 +26,7 @@ public interface OfficeDao {
      * @param id
      * @return Office
      */
-    Office loadOfficeById(Integer id);
+    Office loadOfficeById(Long id);
 
     /**
      * Сохранить офис
@@ -41,7 +41,7 @@ public interface OfficeDao {
      * @param orgId
      * @return Organization
      */
-    Organization loadOrgById(Integer orgId);
+    Organization loadOrgById(Long orgId);
 
 
 }

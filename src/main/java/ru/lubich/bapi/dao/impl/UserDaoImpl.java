@@ -34,12 +34,12 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public List<User> filterUserList(String officeId, String firstName, String secondName, String
-            middleName, String possition, String docCode, String citizenshipCode) {
+            middleName, String position, String docCode, String citizenshipCode) {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> itemRoot = criteriaQuery.from(User.class);
         Predicate criteria = criteriaBuilder.conjunction();
-        Predicate predicateForOrgId = criteriaBuilder.equal(itemRoot.get("office"), Integer.valueOf(officeId));
+        Predicate predicateForOrgId = criteriaBuilder.equal(itemRoot.get("office"), Long.valueOf(officeId));
         criteria = criteriaBuilder.and(criteria, predicateForOrgId);
         if (!(Strings.isNullOrEmpty(firstName))) {
             Predicate predicateForFirstName = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("firstName")), "%" + firstName.toLowerCase() + "%");
@@ -53,16 +53,16 @@ public class UserDaoImpl implements UserDao {
             Predicate predicateForMiddleName = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("middleName")), "%" + middleName.toLowerCase() + "%");
             criteria = criteriaBuilder.and(criteria, predicateForMiddleName);
         }
-        if (!(Strings.isNullOrEmpty(possition))) {
-            Predicate predicateForPossition = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("possition")), "%" + possition.toLowerCase() + "%");
-            criteria = criteriaBuilder.and(criteria, predicateForPossition);
+        if (!(Strings.isNullOrEmpty(position))) {
+            Predicate predicateForPosition = criteriaBuilder.like(criteriaBuilder.lower(itemRoot.get("position")), "%" + position.toLowerCase() + "%");
+            criteria = criteriaBuilder.and(criteria, predicateForPosition);
         }
         if (!(Strings.isNullOrEmpty(docCode))) {
-            Predicate predicateForDocCode = criteriaBuilder.equal(itemRoot.get("document").get("docType").get("code"), Integer.valueOf(docCode));
+            Predicate predicateForDocCode = criteriaBuilder.equal(itemRoot.get("document").get("docType").get("code"), Long.valueOf(docCode));
             criteria = criteriaBuilder.and(criteria, predicateForDocCode);
         }
         if (!(Strings.isNullOrEmpty(citizenshipCode))) {
-            Predicate predicateForCitizenshipCodee = criteriaBuilder.equal(itemRoot.get("citizenship").get("code"), Integer.valueOf(citizenshipCode));
+            Predicate predicateForCitizenshipCodee = criteriaBuilder.equal(itemRoot.get("citizenship").get("code"), Long.valueOf(citizenshipCode));
             criteria = criteriaBuilder.and(criteria, predicateForCitizenshipCodee);
         }
         criteriaQuery.where(criteria);
@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public User loadUserById(Integer id) {
+    public User loadUserById(Long id) {
         return em.find(User.class, id);
     }
 
@@ -82,7 +82,7 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public Office loadOfficeById(String id) {
-        return em.find(Office.class, Integer.valueOf(id));
+        return em.find(Office.class, Long.valueOf(id));
     }
 
     /**
