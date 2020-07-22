@@ -30,6 +30,14 @@ public class Doc {
     @Column(name = "date", nullable = false)
     private Date date;
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Version
     private Integer version;
 
