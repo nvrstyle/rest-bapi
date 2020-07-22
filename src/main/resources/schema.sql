@@ -25,7 +25,7 @@ COMMENT ON TABLE Office IS 'Офис';
 CREATE TABLE IF NOT EXISTS User (
     id                  INTEGER                       COMMENT 'Уникальный идентификатор' PRIMARY KEY AUTO_INCREMENT,
     office_id           INTEGER NOT NULL              COMMENT 'Идентификатор офиса, в котором работает сотрудник',
-    country_id          INTEGER NOT NULL              COMMENT 'Код страны',
+    country_id          INTEGER                       COMMENT 'Код страны',
     first_name          VARCHAR(50) NOT NULL          COMMENT 'Имя',
     second_name         VARCHAR(50)                   COMMENT 'Фамилия',
     middle_name         VARCHAR(50)                   COMMENT 'Отчество',
