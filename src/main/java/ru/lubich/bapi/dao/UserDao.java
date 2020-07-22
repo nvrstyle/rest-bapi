@@ -49,22 +49,20 @@ public interface UserDao {
     Office loadOfficeById(String id);
 
     /**
-     * Получить страну по коду и наименованию
+     * Получить страну по коду
      *
      * @param code
-     * @param name
      * @return Counntry
      */
-    Country loadCitizenshipByCodeAndName(String code, String name);
+    Country loadCitizenshipByCode(String code);
 
     /**
-     * Получить тип документа по коду и наименованию
+     * Получить тип документа по коду
      *
      * @param code
-     * @param name
      * @return DocType
      */
-    DocType loadDocTypeByCodeAndName(String code, String name);
+    DocType loadDocTypeByCode(String code);
 
 }
 

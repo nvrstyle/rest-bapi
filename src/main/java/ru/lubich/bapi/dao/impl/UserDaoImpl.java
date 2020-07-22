@@ -97,11 +97,11 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public Country loadCitizenshipByCodeAndName(String code, String name) {
+    public Country loadCitizenshipByCode(String code) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Country> criteria = builder.createQuery(Country.class);
         Root<Country> criteriaRoot = criteria.from(Country.class);
-        criteria.where(builder.equal(criteriaRoot.get("code"), code), builder.equal(criteriaRoot.get("name"), name));
+        criteria.where(builder.equal(criteriaRoot.get("code"), code));
         TypedQuery<Country> query = em.createQuery(criteria);
         return query.getResultList().stream().findFirst().orElse(null);
     }
@@ -110,13 +110,13 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public DocType loadDocTypeByCodeAndName(String code, String name) {
+    public DocType loadDocTypeByCode(String code) {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<DocType> criteria;
         Root<DocType> criteriaRoot;
         criteria = builder.createQuery(DocType.class);
         criteriaRoot = criteria.from(DocType.class);
-        criteria.where(builder.equal(criteriaRoot.get("code"), code), builder.equal(criteriaRoot.get("name"), name));
+        criteria.where(builder.equal(criteriaRoot.get("code"), code));
         TypedQuery<DocType> query = em.createQuery(criteria);
         return query.getResultList().stream().findFirst().orElse(null);
     }
