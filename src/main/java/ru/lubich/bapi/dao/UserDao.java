@@ -1,68 +1,42 @@
 package ru.lubich.bapi.dao;
 
-import ru.lubich.bapi.model.Country;
-import ru.lubich.bapi.model.DocType;
-import ru.lubich.bapi.model.Office;
+
 import ru.lubich.bapi.model.User;
+
 import java.util.List;
 
 /**
- * DAO для работы с User
+ * DAO-слой для работы с сотрудниками
  */
 public interface UserDao {
 
     /**
-     * Получить отфильтрованный список сотрудников
+     * Возвращает отфильтрованный список сотрудников
      *
-     * @param officeId,
-     * @param firstName,
-     * @param secondName
-     * @param middleName
-     * @param possition
-     * @param docCode
-     * @param citizenshipCode
-     * @return List<User>
+     * @param filter объект с данными фильтрации
+     * @return отфильтрованный список сотрудников
      */
-    public List<User> filterUserList(String officeId, String firstName, String secondName, String middleName, String possition, String docCode, String citizenshipCode);
+    List<User> list(Long officeId, User filter);
 
     /**
-     * Получить сотрудника по идентификатору
+     * Возвращает сотрудника с указанным идентификатором
      *
-     * @param id
-     * @return User
+     * @param id идентификатор сотрудника
+     * @return сотрудника с указанным идентификатором
      */
-    User loadUserById(Long id);
+    User getById(Long id);
 
     /**
-     * Сохранить сотрудника
+     * Обновляет информацию о сотруднике
      *
-     * @param user
+     * @param user объект с новыми данными о сотруднике
+     */
+    void update(Long id, User user);
+
+    /**
+     * Сохраняет информацию о новом сотруднике
+     *
+     * @param user объект с данными о новом сотруднике
      */
     void save(User user);
-
-    /**
-     * Получить офис по идентификатору
-     *
-     * @param id
-     * @return Office
-     */
-    Office loadOfficeById(String id);
-
-    /**
-     * Получить страну по коду
-     *
-     * @param code
-     * @return Counntry
-     */
-    Country loadCitizenshipByCode(String code);
-
-    /**
-     * Получить тип документа по коду
-     *
-     * @param code
-     * @return DocType
-     */
-    DocType loadDocTypeByCode(String code);
-
 }
-
