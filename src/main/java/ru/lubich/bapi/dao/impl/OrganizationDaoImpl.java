@@ -40,18 +40,12 @@ public class OrganizationDaoImpl implements OrganizationDao {
     @Override
     public List<Organization> list(Organization filter) {
         if(filter == null) {
-            throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутрення ошибка ");
         }
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Organization> criteriaQuery = criteriaBuilder.createQuery(Organization.class);
         Root<Organization> organizationRoot = criteriaQuery.from(Organization.class);
-        Predicate predicate = criteriaBuilder.like(organizationRoot.get("name"), "%" + filter.getName() + "%");
-        if (filter.getInn() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(organizationRoot.get("inn"), filter.getInn()));
-        }
-        if (filter.getActive() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(organizationRoot.get("isActive"), filter.getActive()));
-        }
+        Predicate predicate = buildOrganizationPredicate(filter, criteriaBuilder, organizationRoot);
         criteriaQuery.select(organizationRoot).where(predicate);
         TypedQuery<Organization> query = em.createQuery(criteriaQuery);
         List<Organization> organizationList;
@@ -74,7 +68,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
         try {
             organization = query.getSingleResult();
         }catch (NoResultException e){
-            throw new InnerException(String.format("Организация с id %s", id, " не найдена в базе данных"), e);
+            throw new InnerException("Организация с id " + id + " не найдена в базе данных", e);
         }
         return organization;
     }
@@ -83,18 +77,22 @@ public class OrganizationDaoImpl implements OrganizationDao {
      * {@inheritDoc}
      */
     @Override
-    public void update(Long id, Organization updateOrganization) {
+    public void update(Organization updateOrganization) {
         if(updateOrganization == null) {
-            throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутренняя ошибка");
         }
-        Organization organization = getById(id);
+        Organization organization = getById(updateOrganization.getId());
         organization.setName(updateOrganization.getName());
         organization.setFullName(updateOrganization.getFullName());
         organization.setInn(updateOrganization.getInn());
         organization.setKpp(updateOrganization.getKpp());
         organization.setAddress(updateOrganization.getAddress());
-        organization.setPhone(updateOrganization.getPhone());
-        organization.setActive(updateOrganization.getActive());
+        if (organization.getPhone() != null && !organization.getPhone().isEmpty()){
+            organization.setPhone(organization.getPhone());
+        }
+        if (organization.getIsActive() != null) {
+            organization.setIsActive(organization.getIsActive());
+        }
     }
 
     /**
@@ -103,8 +101,22 @@ public class OrganizationDaoImpl implements OrganizationDao {
     @Override
     public void save(Organization organization) {
         if(organization == null) {
-            throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутренняя ошибка");
+        }
+        if (organization.getIsActive() == null){
+            organization.setIsActive(false);
         }
         em.persist(organization);
+    }
+
+    private Predicate buildOrganizationPredicate(Organization filter, CriteriaBuilder criteriaBuilder, Root<Organization> organizationRoot) {
+        Predicate predicate = criteriaBuilder.like(organizationRoot.get("name"), "%" + filter.getName() + "%");
+        if (filter.getInn() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(organizationRoot.get("inn"), "%" + filter.getInn() + "%"));
+        }
+        if (filter.getIsActive() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(organizationRoot.get("isActive"), "%" + filter.getIsActive() + "%"));
+        }
+        return predicate;
     }
 }
