@@ -42,25 +42,7 @@ public class UserDaoImpl implements UserDao {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = criteriaQuery.from(User.class);
-        Predicate predicate = criteriaBuilder.equal(userRoot.get("office").get("id"), filter.getOffice().getId());
-        if (filter.getFirstName() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("firstName"), "%" + filter.getFirstName() + "%"));
-        }
-        if (filter.getSecondName() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("secondName"), "%" + filter.getSecondName() + "%"));
-        }
-        if (filter.getMiddleName() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("middleName"), "%" + filter.getMiddleName() + "%"));
-        }
-        if (filter.getPosition() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("position"), "%" + filter.getPosition() + "%"));
-        }
-        if (filter.getDoc() != null && filter.getDoc().getDocType().getCode() != null) {
-            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("doc").get("docType").get("code"), "%" + filter.getDoc().getDocType().getCode() + "%"));
-        }
-        if (filter.getCountry() != null && filter.getCountry().getCode() != null) {
-            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("country").get("code"), "%" + filter.getCountry().getCode() + "%"));
-        }
+        Predicate predicate = buildUserPredicate(filter, criteriaBuilder, userRoot);
         criteriaQuery.select(userRoot).where(predicate);
         TypedQuery<User> query = em.createQuery(criteriaQuery);
         List<User> userList;
@@ -93,7 +75,6 @@ public class UserDaoImpl implements UserDao {
      */
     @Override
     public void update(User updateUser) {
-        System.out.println("updateUser=" + updateUser);
         User originalUser = getById(updateUser.getId());
         checkUserOffice(updateUser, originalUser);
         originalUser.setFirstName(updateUser.getFirstName());
@@ -114,7 +95,6 @@ public class UserDaoImpl implements UserDao {
         if (saveUser == null) {
             throw new InnerException("Произошла внутренняя ошибка");
         }
-        System.out.println("saveUser=" + saveUser);
         Long officeId = saveUser.getOffice().getId();
         Office office = getOfficeById(officeId);
         saveUser.setOffice(office);
@@ -213,15 +193,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     private void checkUserCountry(User updateUser, User originalUser) {
-        System.out.println("Зашли в checkUserCountry");
-        System.out.println("saveUser= " + updateUser);
         if (updateUser.getCountry() != null) {
-            System.out.println("getcoutry не null");
             String updateUserCountryCode = updateUser.getCountry().getCode();
             if (updateUserCountryCode != null) {
-                System.out.println("getcoutryCode не null");
                 if (!updateUserCountryCode.isEmpty()) {
-                    System.out.println("getcoutryCode не empty");
                     originalUser.setCountry(getCountryByCode(updateUserCountryCode));
                 }
                 else
@@ -233,15 +208,11 @@ public class UserDaoImpl implements UserDao {
     private void checkUserDocument(User updateUser, User originalUser) {
         Doc updateUserDoc = updateUser.getDoc();
         if (updateUserDoc != null) {
-            System.out.println("UpdateUserDoc!=null");
             if (updateUserDoc.getDocType() != null) {
-                System.out.println("updateUserDoc.getDocType() != null");
                 DocType updateUserDocType = updateUserDoc.getDocType();
                 if (updateUserDocType.getCode() != null) {
-                    System.out.println("updateUserDocType.getCode() != null");
                     String updateUserDocTypeCode = updateUserDocType.getCode();
                     if (!updateUserDocTypeCode.isEmpty()) {
-                        System.out.println("updateUserDocType.getCode() != empty");
                         updateUserDoc.setDocType(getDocTypeByCode(updateUserDocTypeCode));
                     }
                     else{
@@ -249,10 +220,8 @@ public class UserDaoImpl implements UserDao {
                     }
                 }
                 if (updateUserDocType.getName() != null) {
-                    System.out.println("updateUserDocType.getName() != null");
                     String updateUserDocTypeName = updateUserDocType.getName();
                     if (!updateUserDocTypeName.isEmpty()) {
-                        System.out.println("updateUserDocType.getName() != empty");
                         updateUserDoc.setDocType(getDocTypeByName(updateUserDocTypeName));
                     } else {
                         originalUser.setDoc(null);
@@ -290,9 +259,31 @@ public class UserDaoImpl implements UserDao {
     }
 
     private void checkUserSecondName(User updateUser, User originalUser) {
-        System.out.println("updateUser.getSecondName().isEmpty()= " + updateUser.getSecondName());
         if (!updateUser.getSecondName().isEmpty()) {
             originalUser.setSecondName(updateUser.getSecondName());
         }
+    }
+
+    private Predicate buildUserPredicate(User filter, CriteriaBuilder criteriaBuilder, Root<User> userRoot) {
+        Predicate predicate = criteriaBuilder.equal(userRoot.get("office").get("id"), filter.getOffice().getId());
+        if (filter.getFirstName() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("firstName"), "%" + filter.getFirstName() + "%"));
+        }
+        if (filter.getSecondName() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("secondName"), "%" + filter.getSecondName() + "%"));
+        }
+        if (filter.getMiddleName() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("middleName"), "%" + filter.getMiddleName() + "%"));
+        }
+        if (filter.getPosition() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("position"), "%" + filter.getPosition() + "%"));
+        }
+        if (filter.getDoc() != null && filter.getDoc().getDocType().getCode() != null) {
+            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("doc").get("docType").get("code"), "%" + filter.getDoc().getDocType().getCode() + "%"));
+        }
+        if (filter.getCountry() != null && filter.getCountry().getCode() != null) {
+            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("country").get("code"), "%" + filter.getCountry().getCode() + "%"));
+        }
+        return predicate;
     }
 }
