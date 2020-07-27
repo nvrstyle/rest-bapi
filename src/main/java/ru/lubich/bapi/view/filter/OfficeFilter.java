@@ -1,5 +1,6 @@
 package ru.lubich.bapi.view.filter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -12,18 +13,19 @@ public class OfficeFilter {
      * Уникальный идентификатор
      */
     @NotNull(groups = ValidateGroup.Update.class)
-    private Integer id;
+    private Long id;
 
     /**
      * Уникальный идентификатор организации
      */
     @NotNull(groups = {ValidateGroup.List.class, ValidateGroup.Save.class})
-    private Integer orgId;
+    private Long orgId;
 
     /**
      * Название
      */
     @NotNull(groups = ValidateGroup.Update.class)
+    @NotBlank(groups = ValidateGroup.Update.class, message = "Необходимо указать название")
     @Size(max = 50, groups = {ValidateGroup.List.class, ValidateGroup.Update.class, ValidateGroup.Save.class})
     private String name;
 
@@ -31,6 +33,7 @@ public class OfficeFilter {
      * Адресс
      */
     @NotNull(groups = ValidateGroup.Update.class)
+    @NotBlank(groups = ValidateGroup.Update.class, message = "Необходимо указать адрес")
     @Size(max = 200, groups = {ValidateGroup.Update.class, ValidateGroup.Save.class})
     private String address;
 
@@ -45,19 +48,19 @@ public class OfficeFilter {
      */
     private Boolean isActive;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long  id) {
         this.id = id;
     }
 
-    public Integer getOrgId() {
+    public Long getOrgId() {
         return orgId;
     }
 
-    public void setOrgId(Integer orgId) {
+    public void setOrgId(Long orgId) {
         this.orgId = orgId;
     }
 
@@ -85,11 +88,30 @@ public class OfficeFilter {
         this.phone = phone;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
-        isActive = active;
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public OfficeFilter(){
+    }
+
+    public OfficeFilter(@NotNull(groups = ValidateGroup.Update.class) Long id,
+                        @NotNull(groups = {ValidateGroup.List.class, ValidateGroup.Save.class}) Long orgId,
+                        @NotNull(groups = ValidateGroup.Update.class)
+                        @Size(max = 50, groups = {ValidateGroup.List.class, ValidateGroup.Update.class, ValidateGroup.Save.class}) String name,
+                        @NotNull(groups = ValidateGroup.Update.class)
+                        @Size(max = 200, groups = {ValidateGroup.Update.class, ValidateGroup.Save.class}) String address,
+                        @Size(max = 20, groups = {ValidateGroup.Update.class, ValidateGroup.Save.class, ValidateGroup.List.class}) String phone,
+                        Boolean isActive) {
+        this.id = id;
+        this.orgId = orgId;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.isActive = isActive;
     }
 }

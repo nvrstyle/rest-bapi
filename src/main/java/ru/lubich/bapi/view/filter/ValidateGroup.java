@@ -7,4 +7,6 @@ public interface ValidateGroup {
     interface Save {}
 
     interface Update {}
+
+    interface Data extends List {}
 }
