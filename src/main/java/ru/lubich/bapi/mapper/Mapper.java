@@ -1,4 +1,4 @@
-package ru.lubich.bapi.model.mapper;
+package ru.lubich.bapi.mapper;
 
 import java.util.List;
 

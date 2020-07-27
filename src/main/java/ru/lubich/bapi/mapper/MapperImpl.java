@@ -1,4 +1,4 @@
-package ru.lubich.bapi.model.mapper;
+package ru.lubich.bapi.mapper;
 
 import ma.glasnost.orika.MapperFactory;
 import org.springframework.stereotype.Service;
