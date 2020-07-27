@@ -1,6 +1,5 @@
 package ru.lubich.bapi.dao.impl;
 
-import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.lubich.bapi.dao.UserDao;
@@ -14,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,11 +38,11 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public List<User> list(Long officeId, User filter) {
+    public List<User> list(User filter) {
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> userRoot = criteriaQuery.from(User.class);
-        Predicate predicate = criteriaBuilder.equal(userRoot.get("office").get("id"), officeId);
+        Predicate predicate = criteriaBuilder.equal(userRoot.get("office").get("id"), filter.getOffice().getId());
         if (filter.getFirstName() != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("firstName"), "%" + filter.getFirstName() + "%"));
         }
@@ -56,14 +56,20 @@ public class UserDaoImpl implements UserDao {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("position"), "%" + filter.getPosition() + "%"));
         }
         if (filter.getDoc() != null && filter.getDoc().getDocType().getCode() != null) {
-            predicate = criteriaBuilder.equal(userRoot.get("doc").get("docType"), filter.getDoc().getDocType());
+            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("doc").get("docType").get("code"), "%" + filter.getDoc().getDocType().getCode() + "%"));
         }
         if (filter.getCountry() != null && filter.getCountry().getCode() != null) {
-            predicate = criteriaBuilder.equal(userRoot.get("country").get("code"), filter.getCountry().getCode());
+            predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("country").get("code"), "%" + filter.getCountry().getCode() + "%"));
         }
         criteriaQuery.select(userRoot).where(predicate);
         TypedQuery<User> query = em.createQuery(criteriaQuery);
-        return query.getResultList();
+        List<User> userList;
+        try {
+            userList = new ArrayList<>(query.getResultList());
+        } catch (NoResultException e){
+            throw new InnerException("По заданному фильтру организации не найдены в базе данных", e);
+        }
+        return userList;
     }
 
     /**
@@ -77,7 +83,7 @@ public class UserDaoImpl implements UserDao {
         try {
             user = query.getSingleResult();
         }catch (NoResultException e){
-            throw new InnerException(String.format("Пользователь с id %s", id, " не найден в базе данных"), e);
+            throw new InnerException("Пользователь с id " + id + " не найден в базе данных", e);
         }
         return user;
     }
@@ -86,47 +92,38 @@ public class UserDaoImpl implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public void update(Long id, User updateUser) {
-        User user = getById(id);
-        user.setFirstName(updateUser.getFirstName());
-        user.setSecondName(updateUser.getSecondName());
-        user.setMiddleName(updateUser.getMiddleName());
-        user.setPosition(updateUser.getPosition());
-        user.setPhone(updateUser.getPhone());
-        user.setDoc(updateUser.getDoc());
-        user.setCountry(updateUser.getCountry());
-        user.setIdentified(updateUser.getIdentified());
+    public void update(User updateUser) {
+        System.out.println("updateUser=" + updateUser);
+        User originalUser = getById(updateUser.getId());
+        checkUserOffice(updateUser, originalUser);
+        originalUser.setFirstName(updateUser.getFirstName());
+        checkUserSecondName(updateUser, originalUser);
+        checkUserMiddleName(updateUser, originalUser);
+        originalUser.setPosition(updateUser.getPosition());
+        checkUserPhone(updateUser, originalUser);
+        checkUserDocument(updateUser, originalUser);
+        checkUserCountry(updateUser, originalUser);
+        checkUserIdentified(updateUser, originalUser);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void save(User user) {
-        if (user == null) {
-            throw new InnerException("Произошла внутренняя ошибка", new NullPointerException());
+    public void save(User saveUser) {
+        if (saveUser == null) {
+            throw new InnerException("Произошла внутренняя ошибка");
         }
-        Long officeId = user.getOffice().getId();
+        System.out.println("saveUser=" + saveUser);
+        Long officeId = saveUser.getOffice().getId();
         Office office = getOfficeById(officeId);
-        user.setOffice(office);
-        Doc document = user.getDoc();
-        if (document != null) {
-            if (document.getDocType() != null) {
-                DocType docType = document.getDocType();
-                if (docType.getCode() != null) {
-                    String docCode = docType.getCode();
-                    document.setDocType(getDocTypeByCode(docCode));
-                }
-                if (docType.getName() != null) {
-                    String docName = docType.getName();
-                    document.setDocType(getDocTypeByName(docName));
-                }
-            }
+        saveUser.setOffice(office);
+        checkUserDocument(saveUser, saveUser);
+        checkUserCountry(saveUser, saveUser);
+        if (saveUser.getIsIdentified() == null){
+            saveUser.setIsIdentified(false);
         }
-        if (user.getCountry() != null) {
-            user.setCountry(getCountryByCode(user.getCountry().getCode()));
-        }
-        em.persist(user);
+        em.persist(saveUser);
     }
 
     /**
@@ -144,7 +141,7 @@ public class UserDaoImpl implements UserDao {
         try {
             country = query.getSingleResult();
         } catch (NoResultException e){
-            throw new InnerException(String.format("Страна с кодом %s", code, " не найдена в базе данных"), e);
+            throw new InnerException("Страна с кодом " + code + " не найдена в базе данных", e);
         }
         return country;
     }
@@ -166,7 +163,7 @@ public class UserDaoImpl implements UserDao {
         try {
             docType = query.getSingleResult();
         } catch (NoResultException e) {
-            throw new InnerException(String.format("Документ с кодом %s", code, " не найден в базе данных"), e);
+            throw new InnerException("Документ с кодом " + code + " не найден в базе данных", e);
         }
         return docType;
     }
@@ -188,7 +185,7 @@ public class UserDaoImpl implements UserDao {
         try {
             docType = query.getSingleResult();
         } catch (NoResultException e) {
-            throw new InnerException(String.format("Документ с названием %s", name, " не найден в базе данных"), e);
+            throw new InnerException("Документ с названием " + name + " не найден в базе данных", e);
         }
         return docType;
     }
@@ -198,7 +195,7 @@ public class UserDaoImpl implements UserDao {
      * @param id идентификатор офиса
      * @return Entity-объект офиса
      */
-    protected Office getOfficeById(Long id){
+    private Office getOfficeById(Long id){
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Office> criteria;
         Root<Office> criteriaRoot;
@@ -210,14 +207,92 @@ public class UserDaoImpl implements UserDao {
         try {
             office = query.getSingleResult();
         } catch (NoResultException e) {
-            throw new InnerException(String.format("Офис с id %s", id, " не найден в базе данных"), e);
+            throw new InnerException("Офис с id " + id + " не найден в базе данных", e);
         }
         return office;
     }
 
+    private void checkUserCountry(User updateUser, User originalUser) {
+        System.out.println("Зашли в checkUserCountry");
+        System.out.println("saveUser= " + updateUser);
+        if (updateUser.getCountry() != null) {
+            System.out.println("getcoutry не null");
+            String updateUserCountryCode = updateUser.getCountry().getCode();
+            if (updateUserCountryCode != null) {
+                System.out.println("getcoutryCode не null");
+                if (!updateUserCountryCode.isEmpty()) {
+                    System.out.println("getcoutryCode не empty");
+                    originalUser.setCountry(getCountryByCode(updateUserCountryCode));
+                }
+                else
+                    originalUser.setCountry(null);
+            }
+        }
+    }
 
+    private void checkUserDocument(User updateUser, User originalUser) {
+        Doc updateUserDoc = updateUser.getDoc();
+        if (updateUserDoc != null) {
+            System.out.println("UpdateUserDoc!=null");
+            if (updateUserDoc.getDocType() != null) {
+                System.out.println("updateUserDoc.getDocType() != null");
+                DocType updateUserDocType = updateUserDoc.getDocType();
+                if (updateUserDocType.getCode() != null) {
+                    System.out.println("updateUserDocType.getCode() != null");
+                    String updateUserDocTypeCode = updateUserDocType.getCode();
+                    if (!updateUserDocTypeCode.isEmpty()) {
+                        System.out.println("updateUserDocType.getCode() != empty");
+                        updateUserDoc.setDocType(getDocTypeByCode(updateUserDocTypeCode));
+                    }
+                    else{
+                        originalUser.setDoc(null);
+                    }
+                }
+                if (updateUserDocType.getName() != null) {
+                    System.out.println("updateUserDocType.getName() != null");
+                    String updateUserDocTypeName = updateUserDocType.getName();
+                    if (!updateUserDocTypeName.isEmpty()) {
+                        System.out.println("updateUserDocType.getName() != empty");
+                        updateUserDoc.setDocType(getDocTypeByName(updateUserDocTypeName));
+                    } else {
+                        originalUser.setDoc(null);
+                    }
+                }
+            }
+        }
+    }
 
+    private void checkUserOffice(User updateUser, User originalUser) {
+        Office updateOffice = updateUser.getOffice();
+        if (updateOffice != null) {
+            Long officeId = updateUser.getOffice().getId();
+            Office office = getOfficeById(officeId);
+            originalUser.setOffice(office);
+        }
+    }
 
+    private void checkUserIdentified(User updateUser, User originalUser) {
+        if (updateUser.getIsIdentified() != null) {
+            originalUser.setIsIdentified(updateUser.getIsIdentified());
+        }
+    }
 
+    private void checkUserPhone(User updateUser, User originalUser) {
+        if (!updateUser.getPhone().isEmpty()) {
+            originalUser.setPhone(updateUser.getPhone());
+        }
+    }
 
+    private void checkUserMiddleName(User updateUser, User originalUser) {
+        if (!updateUser.getMiddleName().isEmpty()) {
+            originalUser.setMiddleName(updateUser.getMiddleName());
+        }
+    }
+
+    private void checkUserSecondName(User updateUser, User originalUser) {
+        System.out.println("updateUser.getSecondName().isEmpty()= " + updateUser.getSecondName());
+        if (!updateUser.getSecondName().isEmpty()) {
+            originalUser.setSecondName(updateUser.getSecondName());
+        }
+    }
 }
