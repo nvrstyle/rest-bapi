@@ -129,6 +129,10 @@ public class User {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -169,12 +173,12 @@ public class User {
         this.phone = phone;
     }
 
-    public Boolean getIdentified() {
+    public Boolean getIsIdentified() {
         return isIdentified;
     }
 
-    public void setIdentified(Boolean identified) {
-        isIdentified = identified;
+    public void setIsIdentified(Boolean isIdentified) {
+        this.isIdentified = isIdentified;
     }
 
     public Office getOffice() {
@@ -200,4 +204,23 @@ public class User {
     public void setCountry(Country country) {
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", secondName='" + secondName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", position='" + position + '\'' +
+                ", phone='" + phone + '\'' +
+                ", isIdentified=" + isIdentified +
+                ", version=" + version +
+                ", office=" + office +
+                ", doc=" + doc +
+                ", country=" + country +
+                '}';
+    }
 }
+
+
