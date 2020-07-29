@@ -7,7 +7,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import ru.lubich.bapi.view.DataView;
-import ru.lubich.bapi.view.SuccessView;
+import ru.lubich.bapi.view.ErrorView;
+import ru.lubich.bapi.view.ResultView;
 
 @RestControllerAdvice
 public class DataResponse implements ResponseBodyAdvice {
@@ -19,11 +20,14 @@ public class DataResponse implements ResponseBodyAdvice {
 
     @Override
     public Object beforeBodyWrite(Object returnView, MethodParameter methodParameter, MediaType mediaType, Class aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
-        if (methodParameter.getParameterType() != void.class) {
-            DataView dataView = new DataView(returnView);
-            return dataView;
+        if(returnView == null){
+            return new ResultView("success");
         }
-        SuccessView successView = new SuccessView("success");
-        return successView;
+        else if((returnView instanceof ErrorView)){
+            return returnView;
+        }
+        else {
+            return new DataView(returnView);
+        }
     }
 }
