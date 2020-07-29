@@ -5,6 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
 /**
  * Справочник видов документов
@@ -17,6 +19,7 @@ public class DocType {
      * Идентификатор
      */
     @Id
+
     @Column(name = "id")
     private int id;
 
@@ -56,5 +59,15 @@ public class DocType {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString() {
+        return "DocType{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", version=" + version +
+                '}';
     }
 }
