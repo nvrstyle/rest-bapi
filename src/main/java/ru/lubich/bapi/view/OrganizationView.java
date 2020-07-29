@@ -8,42 +8,106 @@ public class OrganizationView {
     /**
      * Идентификатор организации
      */
-    public Long id;
+    private Long id;
 
     /**
      * Название организации
      */
-    public String name;
+    private String name;
 
     /**
      * Полное название организации
      */
-    public String fullName;
+    private String fullName;
 
     /**
      * ИНН организации
      */
-    public String inn;
+    private String inn;
 
     /**
      * КПП организации
      */
-    public String kpp;
+    private String kpp;
 
     /**
      * Адрес местонахождения организации
      */
-    public String address;
+    private String address;
 
     /**
      * Телефон организации
      */
-    public String phone;
+    private String phone;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getInn() {
+        return inn;
+    }
+
+    public void setInn(String inn) {
+        this.inn = inn;
+    }
+
+    public String getKpp() {
+        return kpp;
+    }
+
+    public void setKpp(String kpp) {
+        this.kpp = kpp;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
 
     /**
      * Флаг, показывающий является ли организация действующей
      */
-    public Boolean isActive;
+    private Boolean isActive;
 
     @Override
     public String toString() {
