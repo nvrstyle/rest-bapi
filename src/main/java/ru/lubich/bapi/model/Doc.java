@@ -7,11 +7,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.MapsId;
-import javax.persistence.FetchType;
-import javax.persistence.Temporal;
+import javax.persistence.CascadeType;
 import javax.persistence.TemporalType;
+import javax.persistence.Temporal;
 import java.util.Date;
 
 /**
@@ -47,8 +48,14 @@ public class Doc {
     /**
      * Вид документа
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", nullable = false)
+    @ManyToOne(cascade = {
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+            }, fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "type_id")
     private DocType docType;
 
     /**
@@ -92,5 +99,16 @@ public class Doc {
 
     public void setDocType(DocType docType) {
         this.docType = docType;
+    }
+
+    @Override
+    public String toString() {
+        return "Doc{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", date=" + date +
+                ", version=" + version +
+                ", docType=" + docType +
+                '}';
     }
 }
