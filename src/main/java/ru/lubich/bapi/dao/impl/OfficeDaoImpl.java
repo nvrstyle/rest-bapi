@@ -39,23 +39,14 @@ public class OfficeDaoImpl implements OfficeDao {
      * {@inheritDoc}
      */
     @Override
-    public List<Office> list(Long orgId, Office filter) {
+    public List<Office> list(Office filter) {
         if(filter == null) {
             throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
         }
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Office> criteriaQuery = criteriaBuilder.createQuery(Office.class);
         Root<Office> officeRoot = criteriaQuery.from(Office.class);
-        Predicate predicate = criteriaBuilder.equal(officeRoot.get("organization").get("id"), orgId);
-        if (filter.getName() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("name"), "%" + filter.getName() + "%"));
-        }
-        if (filter.getPhone() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("phone"), "%" + filter.getPhone() + "%"));
-        }
-        if (filter.getActive() != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(officeRoot.get("isActive"), filter.getActive()));
-        }
+        Predicate predicate = buildOfficePredicate(filter, criteriaBuilder, officeRoot);
         criteriaQuery.select(officeRoot).where(predicate);
         TypedQuery<Office> query = em.createQuery(criteriaQuery);
         List<Office> officeList;
@@ -87,15 +78,19 @@ public class OfficeDaoImpl implements OfficeDao {
      * {@inheritDoc}
      */
     @Override
-    public void update(Long id, Office updateOffice) {
+    public void update(Office updateOffice) {
         if(updateOffice == null) {
             throw new InnerException("Произошла внутренняя ошибка ",new NullPointerException());
         }
-        Office office = getById(id);
+        Office office = getById(updateOffice.getId());
         office.setName(updateOffice.getName());
-        office.setAddress(updateOffice.getName());
-        office.setPhone(updateOffice.getPhone());
-        office.setActive(updateOffice.getActive());
+        office.setAddress(updateOffice.getAddress());
+        if (updateOffice.getPhone() != null && !updateOffice.getPhone().isEmpty()){
+            office.setPhone(updateOffice.getPhone());
+        }
+        if (updateOffice.getIsActive() != null) {
+            office.setIsActive(updateOffice.getIsActive());
+        }
     }
 
     /**
@@ -104,7 +99,7 @@ public class OfficeDaoImpl implements OfficeDao {
     @Override
     public void save(Office office) {
         if(office == null) {
-            throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутренняя ошибка приложения");
         }
         Organization organization;
         Long organizationId =  office.getOrganization().getId();
@@ -114,9 +109,27 @@ public class OfficeDaoImpl implements OfficeDao {
         try {
             organization = query.getSingleResult();
         } catch (NoResultException e) {
-            throw new InnerException(String.format("Организация с id %s", organizationId, " не найдена в базе данных"), e);
+            throw new InnerException("Организация с id " + organizationId + " не найдена в базе данных", e);
+        }
+        if (office.getIsActive() == null){
+            office.setIsActive(false);
         }
         office.setOrganization(organization);
         em.persist(office);
     }
+
+    private Predicate buildOfficePredicate(Office filter, CriteriaBuilder criteriaBuilder, Root<Office> officeRoot) {
+        Predicate predicate = criteriaBuilder.equal(officeRoot.get("organization").get("id"), filter.getOrganization().getId());
+        if (filter.getName() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("name"), "%" + filter.getName() + "%"));
+        }
+        if (filter.getPhone() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(officeRoot.get("phone"), "%" + filter.getPhone() + "%"));
+        }
+        if (filter.getIsActive() != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(officeRoot.get("isActive"), filter.getIsActive()));
+        }
+        return predicate;
+    }
+
 }
