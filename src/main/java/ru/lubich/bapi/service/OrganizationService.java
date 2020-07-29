@@ -1,9 +1,7 @@
 package ru.lubich.bapi.service;
 
-
-import ru.lubich.bapi.view.OrganizationListFilter;
-import ru.lubich.bapi.view.OrganizationSaveView;
 import ru.lubich.bapi.view.OrganizationView;
+import ru.lubich.bapi.view.filter.OrganizationFilter;
 
 import java.util.List;
 
@@ -18,7 +16,7 @@ public interface OrganizationService {
      * @param filter фильтр для списка
      * @return отфильтрованный список
      */
-    List<OrganizationView> list(OrganizationListFilter filter);
+    List<OrganizationView> list(OrganizationFilter filter);
 
     /**
      * Возвращает организацию с указанным идентификатором
@@ -31,14 +29,14 @@ public interface OrganizationService {
     /**
      * Обновляет информацию об организации
      *
-     * @param view объект, содержащий информацию для обновления
+     * @param filter объект, содержащий информацию для обновления
      */
-    void update(OrganizationView view);
+    void update(OrganizationFilter filter);
 
     /**
      * Сохраняет информацию о новой организации
      *
-     * @param organizationToSave объект, содержащий информацию о новой организации
+     * @param filter объект, содержащий информацию о новой организации
      */
-    void save(OrganizationSaveView organizationToSave);
+    void save(OrganizationFilter filter);
 }

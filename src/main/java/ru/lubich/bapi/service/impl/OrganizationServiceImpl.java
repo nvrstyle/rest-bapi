@@ -1,18 +1,15 @@
 package ru.lubich.bapi.service.impl;
 
+import ma.glasnost.orika.MapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ma.glasnost.orika.MapperFactory;
-
 import ru.lubich.bapi.dao.OrganizationDao;
 import ru.lubich.bapi.exception.InnerException;
 import ru.lubich.bapi.model.Organization;
 import ru.lubich.bapi.service.OrganizationService;
-import ru.lubich.bapi.view.OrganizationListFilter;
-import ru.lubich.bapi.view.OrganizationSaveView;
 import ru.lubich.bapi.view.OrganizationView;
-
+import ru.lubich.bapi.view.filter.OrganizationFilter;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     /**
      * Конструктор
      *  @param organizationDao DAO организаций
-     *  @param mapper
+     *  @param mapper маппер для преобразования из DTO в Entity
      *
      */
     @Autowired
@@ -42,13 +39,13 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<OrganizationView> list(OrganizationListFilter filterView) {
+    public List<OrganizationView> list(OrganizationFilter filterView) {
         if (filterView == null) {
-            throw new InnerException("Внутрення ошибка приложения ", new NullPointerException());
+            throw new InnerException("Внутрення ошибка приложения ");
         }
         Organization organizationFilter = mapper.getMapperFacade().map(filterView, Organization.class);
-        List<Organization> organizationViews = organizationDao.list(organizationFilter);
-        return mapper.getMapperFacade().mapAsList(organizationViews, OrganizationView.class);
+        List<Organization> organizationList = organizationDao.list(organizationFilter);
+        return mapper.getMapperFacade().mapAsList(organizationList, OrganizationView.class);
     }
 
     /**
@@ -58,7 +55,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Transactional(readOnly = true)
     public OrganizationView getById(Long id) {
         if (id == null) {
-            throw new InnerException("Внутрення ошибка приложения ", new NullPointerException());
+            throw new InnerException("Внутрення ошибка приложения ");
         }
         Organization organization = organizationDao.getById(id);
         return mapper.getMapperFacade().map(organization, OrganizationView.class);
@@ -68,13 +65,13 @@ public class OrganizationServiceImpl implements OrganizationService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
-    public void update(OrganizationView updateView) {
-        if (updateView == null) {
-            throw new InnerException("Внутрення ошибка приложения ", new NullPointerException());
+    @Transactional
+    public void update(OrganizationFilter filter) {
+        if (filter == null) {
+            throw new InnerException("Внутрення ошибка приложения ");
         }
-        mapper.getMapperFacade().map(updateView, Organization.class);
-        organizationDao.update(updateView.id,  mapper.getMapperFacade().map(updateView, Organization.class));
+        Organization organizationFilter = mapper.getMapperFacade().map(filter, Organization.class);
+        organizationDao.update(organizationFilter);
     }
 
     /**
@@ -82,10 +79,11 @@ public class OrganizationServiceImpl implements OrganizationService {
      */
     @Override
     @Transactional
-    public void save(OrganizationSaveView saveView) {
-        if (saveView == null) {
-            throw new InnerException("Внутрення ошибка приложения ", new NullPointerException());
+    public void save(OrganizationFilter filter) {
+        if (filter == null) {
+            throw new InnerException("Внутрення ошибка приложения ");
         }
-        organizationDao.save(mapper.getMapperFacade().map(saveView, Organization.class));
+        Organization organizationFilter = mapper.getMapperFacade().map(filter, Organization.class);
+        organizationDao.save(organizationFilter);
     }
 }
