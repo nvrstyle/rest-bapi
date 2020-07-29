@@ -3,22 +3,22 @@ package ru.lubich.bapi.view;
 /**
  * View для сообщения об успешном завершении операции
  */
-public class SuccessView {
+public class ResultView {
 
     /**
      * Поле, содержащее информацию об успешном выполнении
      */
-    private String success;
+    private String result;
 
-    public SuccessView(String success) {
-        this.success = success;
+    public ResultView(String result) {
+        this.result = result;
     }
 
-    public String getSuccess() {
-        return success;
+    public String getResult() {
+        return result;
     }
 
-    public void setSuccess(String success) {
-        this.success = success;
+    public void setResult(String result) {
+        this.result = result;
     }
 }
