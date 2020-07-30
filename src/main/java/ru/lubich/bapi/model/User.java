@@ -73,7 +73,7 @@ public class User {
     /**
      * Офис, в котором работает сотрудник
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id", nullable = false)
     private Office office;
 
