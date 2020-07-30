@@ -41,7 +41,7 @@ public class OfficeDaoImpl implements OfficeDao {
     @Override
     public List<Office> list(Office filter) {
         if(filter == null) {
-            throw new InnerException("Произошла внутрення ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутрення ошибка ");
         }
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Office> criteriaQuery = criteriaBuilder.createQuery(Office.class);
@@ -80,7 +80,7 @@ public class OfficeDaoImpl implements OfficeDao {
     @Override
     public void update(Office updateOffice) {
         if(updateOffice == null) {
-            throw new InnerException("Произошла внутренняя ошибка ",new NullPointerException());
+            throw new InnerException("Произошла внутренняя ошибка ");
         }
         Office office = getById(updateOffice.getId());
         office.setName(updateOffice.getName());
