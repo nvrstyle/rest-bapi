@@ -1,5 +1,6 @@
 package ru.lubich.bapi.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +47,7 @@ public class OfficeController {
      */
     @ApiOperation(value = "Get office list by filter", nickname = "getOfficeListByFilter", httpMethod = "POST")
     @PostMapping("/list")
+    @JsonView(ValidateGroup.List.class)
     public List<OfficeView> list(@RequestBody @Validated(ValidateGroup.List.class) OfficeFilter filter) {
         return officeService.list(filter);
     }
@@ -58,6 +60,7 @@ public class OfficeController {
      */
     @ApiOperation(value = "Get office by id", nickname = "getOfficeById", httpMethod = "GET")
     @GetMapping("/{id}")
+    @JsonView(ValidateGroup.Data.class)
     public OfficeView getById(@PathVariable Long id) {
         return officeService.getById(id);
     }

@@ -1,5 +1,8 @@
 package ru.lubich.bapi.view;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import ru.lubich.bapi.view.filter.ValidateGroup;
+
 /**
  * Класс представления офиса
  */
@@ -8,26 +11,31 @@ public class OfficeView {
     /**
      * Идентификатор офиса
      */
+    @JsonView(ValidateGroup.List.class)
     private Long id;
 
     /**
      * Название офиса
      */
+    @JsonView(ValidateGroup.List.class)
     private String name;
 
     /**
      * Адрес офиса
      */
+    @JsonView(ValidateGroup.Data.class)
     private String address;
 
     /**
      * Номер телефона офиса
      */
+    @JsonView(ValidateGroup.Data.class)
     private String phone;
 
     /**
      * Активен ли офис
      */
+    @JsonView(ValidateGroup.List.class)
     private Boolean isActive;
 
     public Long getId() {
