@@ -1,5 +1,8 @@
 package ru.lubich.bapi.view;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import ru.lubich.bapi.view.filter.ValidateGroup;
+
 /**
  * Класс представления организации
  */
@@ -8,36 +11,43 @@ public class OrganizationView {
     /**
      * Идентификатор организации
      */
+    @JsonView({ValidateGroup.List.class})
     private Long id;
 
     /**
      * Название организации
      */
+    @JsonView({ValidateGroup.List.class})
     private String name;
 
     /**
      * Полное название организации
      */
+    @JsonView({ValidateGroup.Data.class})
     private String fullName;
 
     /**
      * ИНН организации
      */
+    @JsonView({ValidateGroup.Data.class})
     private String inn;
 
     /**
      * КПП организации
      */
+    @JsonView({ValidateGroup.Data.class})
     private String kpp;
 
     /**
      * Адрес местонахождения организации
      */
+    @JsonView({ValidateGroup.Data.class})
     private String address;
 
     /**
      * Телефон организации
      */
+    @JsonView({ValidateGroup.Data.class})
     private String phone;
 
     public Long getId() {
@@ -107,6 +117,7 @@ public class OrganizationView {
     /**
      * Флаг, показывающий является ли организация действующей
      */
+    @JsonView({ValidateGroup.List.class})
     private Boolean isActive;
 
     @Override

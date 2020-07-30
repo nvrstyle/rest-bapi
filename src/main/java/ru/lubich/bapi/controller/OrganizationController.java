@@ -1,5 +1,6 @@
 package ru.lubich.bapi.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -45,6 +46,7 @@ public class OrganizationController {
      */
     @ApiOperation(value = "Get organization list by filter", nickname = "getOrganizationListById", httpMethod = "POST")
     @PostMapping("/list")
+    @JsonView(ValidateGroup.List.class)
     public List<OrganizationView> list(@RequestBody @Validated(ValidateGroup.List.class) OrganizationFilter filter) {
         return organizationService.list(filter);
     }
@@ -57,6 +59,7 @@ public class OrganizationController {
      */
     @ApiOperation(value = "Get organization by id", nickname = "getOrganizationById", httpMethod = "GET")
     @GetMapping("/{id}")
+    @JsonView(ValidateGroup.Data.class)
     public OrganizationView getById(@PathVariable Long id) {
         return organizationService.getById(id);
     }
