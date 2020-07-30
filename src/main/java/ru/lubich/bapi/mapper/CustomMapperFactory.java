@@ -1,5 +1,6 @@
 package ru.lubich.bapi.mapper;
 
+import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import org.springframework.beans.factory.FactoryBean;
@@ -37,6 +38,7 @@ public class CustomMapperFactory implements FactoryBean<MapperFactory> {
                 .field("officeId", "office.id")
                 .field("docCode", "doc.docType.code")
                 .field("docName", "doc.docType.name")
+                .field("docNumber", "doc.number")
                 .field("docDate", "doc.date")
                 .field("citizenshipCode", "country.code")
                 .field("citizenshipName", "country.name")
