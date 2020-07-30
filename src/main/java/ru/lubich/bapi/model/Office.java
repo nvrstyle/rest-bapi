@@ -146,16 +146,4 @@ public class Office {
         this.organization = organization;
     }
 
-    @Override
-    public String toString() {
-        return "Office{" +
-                "id=" + id +
-                ", version=" + version +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", isActive=" + isActive +
-                ", organization=" + organization +
-                '}';
-    }
 }

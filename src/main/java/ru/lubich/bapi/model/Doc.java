@@ -101,14 +101,4 @@ public class Doc {
         this.docType = docType;
     }
 
-    @Override
-    public String toString() {
-        return "Doc{" +
-                "id=" + id +
-                ", number='" + number + '\'' +
-                ", date=" + date +
-                ", version=" + version +
-                ", docType=" + docType +
-                '}';
-    }
 }

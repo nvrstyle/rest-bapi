@@ -61,13 +61,4 @@ public class DocType {
         this.code = code;
     }
 
-    @Override
-    public String toString() {
-        return "DocType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", version=" + version +
-                '}';
-    }
 }
