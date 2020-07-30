@@ -278,10 +278,10 @@ public class UserDaoImpl implements UserDao {
         if (filter.getPosition() != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(userRoot.get("position"), "%" + filter.getPosition() + "%"));
         }
-        if (filter.getDoc() != null && filter.getDoc().getDocType().getCode() != null) {
+        if (filter.getDoc() != null && !filter.getDoc().getDocType().getCode().isEmpty()) {
             predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("doc").get("docType").get("code"), "%" + filter.getDoc().getDocType().getCode() + "%"));
         }
-        if (filter.getCountry() != null && filter.getCountry().getCode() != null) {
+        if (filter.getCountry() != null && !filter.getCountry().getCode().isEmpty()) {
             predicate = criteriaBuilder.and(predicate,criteriaBuilder.like(userRoot.get("country").get("code"), "%" + filter.getCountry().getCode() + "%"));
         }
         return predicate;
