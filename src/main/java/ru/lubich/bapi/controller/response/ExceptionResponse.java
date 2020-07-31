@@ -19,10 +19,17 @@ import java.util.List;
 @RestControllerAdvice
 public class ExceptionResponse {
 
-    @ExceptionHandler({InnerException.class, HttpMessageNotReadableException.class, HttpRequestMethodNotSupportedException.class})
+    @ExceptionHandler({InnerException.class, NullPointerException.class, HttpMessageNotReadableException.class, HttpRequestMethodNotSupportedException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorView exceptionHandler(RuntimeException e) {
-        ErrorView errorView = new ErrorView(e.getMessage());
+        String message;
+        if (e instanceof NullPointerException) {
+            message = "В запросе Был передан некорректный JSON";
+        }
+        else {
+            message = e.getMessage();
+        }
+        ErrorView errorView = new ErrorView(message);
         return errorView;
     }
 
