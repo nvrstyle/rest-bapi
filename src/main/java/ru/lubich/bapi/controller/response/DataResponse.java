@@ -29,5 +29,11 @@ public class DataResponse implements ResponseBodyAdvice {
         else {
             return new DataView(returnView);
         }
+        //if (methodParameter.getParameterType() != void.class) {
+        //    DataView dataView = new DataView(returnView);
+        //    return dataView;
+        //}
+        //SuccessView successView = new SuccessView("success");
+        //return successView;
     }
 }

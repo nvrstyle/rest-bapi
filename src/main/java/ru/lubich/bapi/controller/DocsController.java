@@ -1,6 +1,5 @@
 package ru.lubich.bapi.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +35,6 @@ public class DocsController {
      *
      * @return список документов и их кодов
      */
-    @ApiOperation(value = "Get documents list", nickname = "getDocumentsList", httpMethod = "GET")
     @GetMapping("/docs")
     public List<DocTypeView> list() {
         return docsService.list();

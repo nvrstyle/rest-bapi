@@ -1,13 +1,12 @@
 package ru.lubich.bapi.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lubich.bapi.service.CountryService;
 import ru.lubich.bapi.view.CountryView;
+
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -36,7 +35,6 @@ public class CountryController {
      *
      * @return список стран и их кодов
      */
-    @ApiOperation(value = "Get countries list", nickname = "getCountriesList", httpMethod = "GET")
     @GetMapping("/countries")
     public List<CountryView> list() {
         return countryService.list();

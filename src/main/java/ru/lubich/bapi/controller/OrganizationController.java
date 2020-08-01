@@ -1,14 +1,13 @@
 package ru.lubich.bapi.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lubich.bapi.service.OrganizationService;
 import ru.lubich.bapi.view.OrganizationView;
@@ -44,7 +43,6 @@ public class OrganizationController {
      * @param filter фильтр для списка
      * @return отфильтрованный список
      */
-    @ApiOperation(value = "Get organization list by filter", nickname = "getOrganizationListById", httpMethod = "POST")
     @PostMapping("/list")
     @JsonView(ValidateGroup.List.class)
     public List<OrganizationView> list(@RequestBody @Validated(ValidateGroup.List.class) OrganizationFilter filter) {
@@ -57,7 +55,6 @@ public class OrganizationController {
      * @param id идентификатор организации
      * @return организацию с указанным идентификатором
      */
-    @ApiOperation(value = "Get organization by id", nickname = "getOrganizationById", httpMethod = "GET")
     @GetMapping("/{id}")
     @JsonView(ValidateGroup.Data.class)
     public OrganizationView getById(@PathVariable Long id) {
@@ -69,7 +66,6 @@ public class OrganizationController {
      *
      * @param filter объект, содержащий информацию для обновления
      */
-    @ApiOperation(value = "Update organization", nickname = "updateOrganiztion", httpMethod = "POST")
     @PostMapping("/update")
     public void update(@RequestBody @Validated(ValidateGroup.Update.class) OrganizationFilter filter) {
         organizationService.update(filter);
@@ -80,7 +76,6 @@ public class OrganizationController {
      *
      * @param filter объект, содержащий информацию о новой организации
      */
-    @ApiOperation(value = "Save organizaion", nickname = "saveOrganization", httpMethod = "POST")
     @PostMapping("/save")
     public void save(@RequestBody @Validated(ValidateGroup.Save.class) OrganizationFilter filter) {
         organizationService.save(filter);
