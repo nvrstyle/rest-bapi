@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -197,39 +198,140 @@ public class UserDaoImpl implements UserDao {
             String updateUserCountryCode = updateUser.getCountry().getCode();
             if (updateUserCountryCode != null) {
                 if (!updateUserCountryCode.isEmpty()) {
-                    originalUser.setCountry(getCountryByCode(updateUserCountryCode));
+                        originalUser.setCountry(getCountryByCode(updateUserCountryCode));
                 }
-                else
+                else {
                     originalUser.setCountry(null);
+                }
             }
         }
     }
 
+    //private void checkUserDocument(User updateUser, User originalUser){
+    //    if (updateUser.getDoc() != null || updateUser.getDocName() != null
+    //            || updateUser.getDocNumber() != null || updateUser.getDocDate() != null) {
+    //        UserDoc userDoc = new UserDoc();
+    //        if (updateUser.getDocCode() != null) {
+    //            Docs docs = docsDao.loadByCode(updateUser.getDocCode());
+    //            userDoc.setDocs(docs);
+    //        }
+    //        if (updateUser.getDocName() != null) {
+    //            Docs docs = docsDao.loadByName(updateUser.getDocName());
+    //            userDoc.setDocs(docs);
+    //        }
+    //        if (updateUser.getDocNumber() != null) {
+    //            userDoc.setDocNumber(updateUser.getDocNumber());
+    //        }
+    //        if (updateUser.getDocDate() != null) {
+    //            userDoc.setDocDate(updateUser.getDocDate());
+    //        }
+    //        user.setUserDoc(userDoc);
+    //    }
+    //    if (updateUser.getCitizenshipCode() != null) {
+    //        Countries countries = countriesDao.loadByCode(updateUser.getCitizenshipCode());
+    //        user.setCountries(countries);
+    //    }
+    //    return user;
+//
+    //}
     private void checkUserDocument(User updateUser, User originalUser) {
-        Doc updateUserDoc = updateUser.getDoc();
-        if (updateUserDoc != null) {
-            if (updateUserDoc.getDocType() != null) {
-                DocType updateUserDocType = updateUserDoc.getDocType();
-                if (updateUserDocType.getCode() != null) {
-                    String updateUserDocTypeCode = updateUserDocType.getCode();
-                    if (!updateUserDocTypeCode.isEmpty()) {
-                        updateUserDoc.setDocType(getDocTypeByCode(updateUserDocTypeCode));
-                    }
-                    else{
-                        originalUser.setDoc(null);
-                    }
-                }
-                if (updateUserDocType.getName() != null) {
-                    String updateUserDocTypeName = updateUserDocType.getName();
-                    if (!updateUserDocTypeName.isEmpty()) {
-                        updateUserDoc.setDocType(getDocTypeByName(updateUserDocTypeName));
-                    } else {
-                        originalUser.setDoc(null);
-                    }
+        String docNumber = updateUser.getDoc().getNumber();
+        Date docDate = updateUser.getDoc().getDate();
+        System.out.println("Чему равен docDate: " + docDate);
+        String docCode = updateUser.getDoc().getDocType().getCode();
+        String docName = updateUser.getDoc().getDocType().getName();
+        if (!docNumber.isEmpty() && !docCode.isEmpty() && !docName.isEmpty() && docDate != null) {
+            System.out.println("Зашли в блок когда все не пустые");
+            Doc userDoc = new Doc();
+            userDoc.setNumber(docNumber);
+            userDoc.setDate(docDate);
+            userDoc.setDocType(getDocTypeByCode(docCode));
+            userDoc.setDocType(getDocTypeByName(docName));
+            userDoc.setUser(originalUser);
+            originalUser.setDoc(userDoc);
+        }
+        else {
+            if ((docNumber.isEmpty() && docCode.isEmpty() && docName.isEmpty() && docDate == null)) {
+                System.out.println("Зашли в блок когда все пустые");
+                if (originalUser.equals(updateUser)) {
+                    originalUser.setDoc(null);
                 }
             }
+            else {
+                System.out.println("Зашли в блок когда должны бросить исключение");
+                throw new InnerException("Необходимо заполнить все поля документа, либо все поля оставить пустыми");
+            }
         }
+
     }
+    //private void checkUserDocumentUpdate(User updateUser, User originalUser) {
+    //    Doc updateUserDoc = updateUser.getDoc();
+    //    if (updateUserDoc != null) {
+    //        if (originalUser.getDoc() == null) {
+    //            Doc newDoc = new Doc();
+    //            originalUser.setDoc(newDoc);
+    //            originalUser.getDoc().setUser(originalUser);
+    //        }
+    //        if ((updateUserDoc.getNumber() != null) || (updateUserDoc.getDate() != null)) {
+    //            String docNumber = updateUserDoc.getNumber();
+    //            if (!docNumber.isEmpty()) {
+    //                originalUser.getDoc().setNumber(docNumber);
+    //            }
+    //            Date docDate = updateUserDoc.getDate();
+    //            if (docDate != null) {
+    //                originalUser.getDoc().setDate(docDate);
+    //            }
+    //        }
+    //        DocType updateUserDocType = updateUserDoc.getDocType();
+    //        if (updateUserDocType != null) {
+    //            if (originalUser.getDoc().getDocType() == null) {
+    //                if ((updateUserDocType.getCode() != null) || (updateUserDocType.getName() != null)) {
+    //                    String docTypeCode = updateUserDocType.getCode();
+    //                    if (!docTypeCode.isEmpty()) {
+//
+    //                    }
+    //                }
+    //            }
+    //        } else {
+//
+    //        }
+    //    }
+    //}
+
+
+    //private void checkUserDocument(User updateUser, User originalUser) {
+    //    Doc updateUserDoc = updateUser.getDoc();
+    //    System.out.println("Зашли в проверку документа");
+    //    if (updateUserDoc != null) {
+    //        System.out.println("updateUserDoc != null");
+    //        if (updateUserDoc.getDocType() != null) {
+    //            System.out.println("updateUserDoc.getDocType() != null");
+    //            DocType updateUserDocType = updateUserDoc.getDocType();
+    //            if (updateUserDocType.getCode() != null) {
+    //                System.out.println("updateUserDocType.getCode() != null");
+    //                String updateUserDocTypeCode = updateUserDocType.getCode();
+    //                if (!updateUserDocTypeCode.isEmpty()) {
+    //                    System.out.println("!updateUserDocTypeCode.isEmpty()");
+    //                    Doc saveDoc = new Doc();
+    //                    saveDoc.setDocType(getDocTypeByCode(updateUserDocTypeCode));
+    //                    updateUserDoc.setDocType(getDocTypeByCode(updateUserDocTypeCode));
+    //                }
+    //                else{
+    //                    System.out.println("Оказалось Empty, задаём null");
+    //                    originalUser.setDoc(null);
+    //                }
+    //            }
+    //            if (updateUserDocType.getName() != null) {
+    //                String updateUserDocTypeName = updateUserDocType.getName();
+    //                if (!updateUserDocTypeName.isEmpty()) {
+    //                    updateUserDoc.setDocType(getDocTypeByName(updateUserDocTypeName));
+    //                } else {
+    //                    originalUser.setDoc(null);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 
     private void checkUserOffice(User updateUser, User originalUser) {
         Office updateOffice = updateUser.getOffice();
